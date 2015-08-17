@@ -2,23 +2,25 @@
 
 var n = process.argv[2];
 var d = new Date().getTime();
+var c = {1: 1};
+
+function collatzLength(n) {
+  if (!(n in c)) {
+    if (n % 2 == 0)
+      c[n] = collatzLength(n * 0.5) + 1;
+    else
+      c[n] = collatzLength(n * 3 + 1) + 1;
+  }
+
+  return c[n];
+};
 
 function biggestCollatzSequence(s) {
   var bs = s;
   var bl = 0;
 
-  while(s > 0) {
-    var n = s;
-    var l = 0;
-
-    while(n !== 1) {
-      l++;
-
-      if (n % 2 == 0)
-        n = n / 2;
-      else
-        n = 3 * n + 1;
-    }
+  while (s > 0) {
+    var l = collatzLength(s);
 
     if (l > bl) {
       bl = l;
