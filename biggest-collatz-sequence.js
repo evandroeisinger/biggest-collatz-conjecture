@@ -1,37 +1,40 @@
 #!/usr/bin/env node
 
-var n = process.argv[2];
-var d = new Date().getTime();
-var c = {1: 1};
+var memory = {1: 1};
 
-function collatzLength(n) {
-  if (!(n in c)) {
-    if (n % 2 == 0)
-      c[n] = collatzLength(n * 0.5) + 1;
-    else
-      c[n] = collatzLength(n * 3 + 1) + 1;
-  }
+var start_time = new Date().getTime();
+var biggest_number_sequence = biggestCollatzSequence(process.argv[2])
+var end_time = new Date().getTime();
 
-  return c[n];
-};
+console.log(biggest_number_sequence);
+console.log((new Date().getTime() - start_time) / 1000);
 
-function biggestCollatzSequence(s) {
-  var bs = s;
-  var bl = 0;
-
-  while (s > 0) {
-    var l = collatzLength(s);
-
-    if (l > bl) {
-      bl = l;
-      bs = s;
+function collatzLength (number) {
+    if (number in memory) {
+        return memory[number];
     }
 
-    s--;
-  }
+    if (number % 2 == 0) {
+        return memory[number] = collatzLength(number * 0.5) + 1;
+    }
 
-  return bs;
-}
+    return memory[number] = collatzLength(number * 3 + 1) + 1;
+};
 
-console.log('\x1b[36mnumber with biggest collatz sequence:\x1b[0m \x1b[45m %s \x1b[0m', biggestCollatzSequence(n));
-console.log('\x1b[35m%s seconds\x1b[0m',(new Date().getTime() - d) / 1000);
+function biggestCollatzSequence (number) {
+    var biggest_number_sequence = number;
+    var biggest_number_length = 0;
+
+    while (number > 0) {
+        var sequence_length = collatzLength(number);
+
+        if (sequence_length > biggest_number_length) {
+            biggest_number_sequence = number;
+            biggest_number_length = sequence_length;
+        }
+
+        number--;
+    }
+
+    return biggest_number_sequence;
+};
